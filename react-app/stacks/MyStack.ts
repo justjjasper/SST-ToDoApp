@@ -15,7 +15,8 @@ export function MyStack({ stack }: StackContext) {
       },
     },
     routes: {
-      "POST /": "functions/lambda.handler",
+      "POST /": "functions/lambda.postHandler",
+      "GET /": "functions/lambda.getHandler"
     },
   });
 

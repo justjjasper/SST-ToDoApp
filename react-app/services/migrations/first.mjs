@@ -10,13 +10,13 @@ export async function up(db) {
     .addColumn("completed", "boolean")
     .execute();
 
-  await db
-    .insertInto("todotbl")
-    .values({
-      task: "Create SST App",
-      completed: false,
-    })
-    .execute();
+  // await db
+  //   .insertInto("todotbl")
+  //   .values({
+  //     task: "Create SST App",
+  //     completed: false,
+  //   })
+  //   .execute();
 }
 
 /**

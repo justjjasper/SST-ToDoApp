@@ -22,24 +22,45 @@ const db = new Kysely<Database>({
   }),
 });
 
-export async function handler() {
+export async function getHandler() {
   const record = await db
     .selectFrom("todotbl")
-    .select("task")
-    .executeTakeFirstOrThrow();
-
-  await db
-  .updateTable("todotbl")
-  .set({
-    completed: false,
-  })
-  .execute();
+    .selectAll()
+    .execute();
 
   return {
     statusCode: 200,
-    body: record.task,
+    body: JSON.stringify(record)
   };
 }
+
+export async function postHandler(event:any) {
+  // const postBody = JSON.parse(event.body)
+  console.log('what is the body', event.body)
+
+  return {
+    statusCode: 200,
+    body: event.body
+  }
+}
+// export async function handler() {
+//   const record = await db
+//     .selectFrom('todotbl')
+//     .selectAll()
+//     .execute()
+
+  // await db
+  // .updateTable("todotbl")
+  // .set({
+  //   completed: false,
+  // })
+  // .execute();
+
+//   return {
+//     statusCode: 200,
+//     body: record
+//   }
+// }
 // import { APIGatewayProxyHandlerV2 } from "aws-lambda";
 
 // export const handler: APIGatewayProxyHandlerV2 = async (event) => {
