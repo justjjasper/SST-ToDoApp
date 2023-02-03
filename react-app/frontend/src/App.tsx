@@ -13,7 +13,7 @@ function App() {
 
   return (
     <div className="App">
-      {task.map( (each: { task: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | React.ReactFragment | React.ReactPortal | null | undefined; }) => {
+      {task.map( (each: { task: string }) => {
         return (
           <div>{each.task} </div>
         )

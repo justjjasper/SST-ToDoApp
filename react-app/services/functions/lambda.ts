@@ -22,6 +22,7 @@ const db = new Kysely<Database>({
   }),
 });
 
+// handles GET function (controller)
 export async function getHandler() {
   const record = await db
     .selectFrom("todotbl")
@@ -34,6 +35,7 @@ export async function getHandler() {
   };
 }
 
+// handles POST function (controller) **still need to incorporate INSERT methods**
 export async function postHandler(event:any) {
   // const postBody = JSON.parse(event.body)
   console.log('what is the body', event.body)
