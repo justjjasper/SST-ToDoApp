@@ -2,6 +2,11 @@ import { RDSDataService } from "aws-sdk";
 import { Kysely } from "kysely";
 import { DataApiDialect } from "kysely-data-api";
 import { RDS } from "@serverless-stack/node/rds";
+import { APIGatewayProxyEventV2 } from "aws-lambda"
+import { CreateAWSLambdaContextOptions, awsLambdaRequestHandler } from '@trpc/server/adapters/aws-lambda';
+import { initTRPC } from '@trpc/server';
+import * as trpc from '@trpc/server'
+import { z } from 'zod';
 
 interface Database {
   todotbl: {
@@ -21,6 +26,31 @@ const db = new Kysely<Database>({
     },
   }),
 });
+
+// implement tRPC router
+const appRouter = initTRPC.create().router({
+  getTasks: initTRPC.create().procedure.input(z.string()).query((req) => {
+    console.log('hey what is input', req)
+    req.input
+    return { task: req.input, completed: false}
+  })
+});
+
+export type AppRouter = typeof appRouter
+
+// **Do not need Context atm, it's meant for Auth**
+// const createContext = ({
+//   event,
+//   context,
+// }: CreateAWSLambdaContextOptions<APIGatewayProxyEventV2>) => ({}) // no context
+// type Context = trpc.inferAsyncReturnType<typeof createContext>;
+
+export const trpcHandler = awsLambdaRequestHandler({
+  router: appRouter,
+  // createContext,
+})
+
+
 
 // handles GET function (controller)
 export async function getHandler() {
