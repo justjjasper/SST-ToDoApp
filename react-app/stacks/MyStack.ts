@@ -15,8 +15,6 @@ export function MyStack({ stack }: StackContext) {
       },
     },
     routes: {
-      "POST /": "functions/lambda.postHandler",
-      "GET /": "functions/lambda.getHandler",
       "GET /trpc/{proxy+}": "functions/lambda.trpcHandler"
     },
   });

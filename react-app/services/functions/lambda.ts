@@ -56,29 +56,34 @@ export const trpcHandler = awsLambdaRequestHandler({
 
 
 
+
+
+
+
+
+
 // handles GET function (controller)
-export async function getHandler() {
-  const record = await db
-    .selectFrom("todotbl")
-    .selectAll()
-    .execute();
+// export async function getHandler() {
+//   const record = await db
+//     .selectFrom("todotbl")
+//     .selectAll()
+//     .execute();
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify(record)
-  };
-}
+//   return {
+//     statusCode: 200,
+//     body: JSON.stringify(record)
+//   };
+// }
 
-// handles POST function (controller) **still need to incorporate INSERT methods**
-export async function postHandler(event:any) {
-  // const postBody = JSON.parse(event.body)
-  console.log('what is the body', event.body)
+// export async function postHandler(event:any) {
+//   // const postBody = JSON.parse(event.body)
+//   console.log('what is the body', event.body)
 
-  return {
-    statusCode: 200,
-    body: event.body
-  }
-}
+//   return {
+//     statusCode: 200,
+//     body: event.body
+//   }
+// }
 // export async function handler() {
 //   const record = await db
 //     .selectFrom('todotbl')
