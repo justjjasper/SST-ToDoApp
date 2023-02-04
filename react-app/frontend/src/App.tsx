@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import { createTRPCReact } from '@trpc/react-query';
 import type { AppRouter } from '../../services/functions/lambda';
@@ -11,13 +11,30 @@ export const trpc = createTRPCReact<AppRouter>();
 
 function AppContent() {
 
+  const [tasks, setTasks] = useState<{task:string, completed: boolean}[]>([])
   const getTask = trpc.getTasks.useQuery().data;
+
+  useEffect(()=> {
+    if (getTask) setTasks(getTask)
+    console.log('it is working')
+  }, [getTask])
+
+  const addTaskFunc = (task: string) => {
+    let present = false;
+    tasks.forEach(each => {
+      if (each.task === task) present = true
+    })
+
+    if (!present) {
+      setTasks([...tasks, {task, completed: false}])
+    }
+  }
 
   return (
     <div className="App">
       <h4> To Do App </h4>
-      <Form/>
-      {getTask && <Tasks tasks={getTask}/>}
+      <Form addTaskFunc={addTaskFunc}/>
+      {getTask && <Tasks tasks={tasks}/>}
     </div>
   );
 }
