@@ -15,6 +15,7 @@ interface Database {
   };
 }
 
+// implement PSQL database
 const db = new Kysely<Database>({
   dialect: new DataApiDialect({
     mode: "postgres",
@@ -31,25 +32,32 @@ const db = new Kysely<Database>({
 const t = initTRPC.create()
 const appRouter = t.router({
   getTasks: t.procedure
-    .output(z.array(z.object({task: z.string(), completed: z.boolean()}))).query(async () => {
+  .output(z.array(z.object({task: z.string(), completed: z.boolean()}))).query(async () => {
     const record = await db
-      .selectFrom("todotbl")
+      .selectFrom('todotbl')
       .selectAll()
       .execute();
 
     return record
   }),
   addTask: t.procedure
-    .input(z.string()).mutation(async req => {
-    const result = await db
-      .insertInto('todotbl')
-      .values({
+  .input(z.string()).mutation(async req => {
+    await db
+    .insertInto('todotbl')
+    .values({
         task: req.input,
         completed: false
-      })
-      .execute()
+    })
+    .execute()
+  }),
+  delTask: t.procedure
+  .input(z.string()).mutation (async req => {
+    const res = await db
+    .deleteFrom('todotbl')
+    .where('task', '=', req.input)
+    .executeTakeFirst()
 
-    return result
+    console.log('del backend', res.numDeletedRows)
   })
 });
 

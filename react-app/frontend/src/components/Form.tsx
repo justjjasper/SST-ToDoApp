@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 import { trpc } from '../App'
 
 export default function Form ({ addTaskFunc = (task:string) => {}} ) {

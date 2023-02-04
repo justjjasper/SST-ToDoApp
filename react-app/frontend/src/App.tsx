@@ -19,22 +19,34 @@ function AppContent() {
     console.log('it is working')
   }, [getTask])
 
-  const addTaskFunc = (task: string) => {
+  const addTaskFunc = (task: string): void => {
     let present = false;
     tasks.forEach(each => {
       if (each.task === task) present = true
     })
-
     if (!present) {
       setTasks([...tasks, {task, completed: false}])
     }
+  };
+
+  const delTaskFunc = (task: string): void => {
+    const newTasks = tasks.filter(each => each.task !== task)
+
+    setTasks(newTasks)
+    console.log('it cicked')
   }
 
   return (
     <div className="App">
       <h4> To Do App </h4>
-      <Form addTaskFunc={addTaskFunc}/>
-      {getTask && <Tasks tasks={tasks}/>}
+      <Form
+      addTaskFunc={addTaskFunc}
+      />
+      {getTask &&
+      <Tasks
+      tasks={tasks}
+      delTaskFunc={delTaskFunc}
+      />}
     </div>
   );
 }

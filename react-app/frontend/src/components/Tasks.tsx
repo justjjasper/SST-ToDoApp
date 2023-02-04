@@ -2,20 +2,21 @@ import { useState } from 'react';
 import Task from './Task';
 
 interface TaskProp {
-  task: string,
+  task: string;
   completed: boolean
 };
 
 interface Props {
-  tasks: TaskProp[]
+  tasks: TaskProp[],
+  delTaskFunc: (task: string) => void
 };
 
-export default function Tasks ( {tasks}: Props ) {
+export default function Tasks ( {tasks, delTaskFunc}: Props) {
 
   return (
     <div>
       {tasks.map( (each, i) => (
-        <Task key={i} task={each}/>
+        <Task key={i} task={each} delTaskFunc={delTaskFunc}/>
       ))}
     </div>
   )
