@@ -16,7 +16,7 @@ function AppContent() {
     <div className="App">
       {getTask?.map((each, i) => {
         return (
-          <div key={i}>
+          <div key= {i}>
             {each.task}
           </div>
         )
@@ -47,7 +47,3 @@ const App = () => {
 }
 
 export default App;
-function each(each: any, arg1: (i: any) => JSX.Element): React.ReactNode {
-  throw new Error('Function not implemented.');
-}
-
