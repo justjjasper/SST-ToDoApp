@@ -4,23 +4,20 @@ import { createTRPCReact } from '@trpc/react-query';
 import type { AppRouter } from '../../services/functions/lambda';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { httpBatchLink } from '@trpc/client';
-
+import Form from './components/Form'
+import Tasks from './components/Tasks'
 
 export const trpc = createTRPCReact<AppRouter>();
 
 function AppContent() {
 
-  const getTask = trpc.getTasks.useQuery().data
+  const getTask = trpc.getTasks.useQuery().data;
 
   return (
     <div className="App">
-      {getTask?.map((each, i) => {
-        return (
-          <div key= {i}>
-            {each.task}
-          </div>
-        )
-      })}
+      <h4> To Do App </h4>
+      <Form/>
+      {getTask && <Tasks tasks={getTask}/>}
     </div>
   );
 }
