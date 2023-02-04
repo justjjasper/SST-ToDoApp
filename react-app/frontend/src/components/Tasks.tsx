@@ -15,7 +15,7 @@ export default function Tasks ( {tasks}: Props ) {
   return (
     <div>
       {tasks.map( (each, i) => (
-        <Task task={each}/>
+        <Task key={i} task={each}/>
       ))}
     </div>
   )

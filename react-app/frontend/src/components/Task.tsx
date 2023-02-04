@@ -6,7 +6,7 @@ interface TaskProp {
 };
 
 export default function Task ( {task}: {task: TaskProp} ) {
-  console.log('did taks go throug', task)
+
   return (
     <div>
       {task.task}

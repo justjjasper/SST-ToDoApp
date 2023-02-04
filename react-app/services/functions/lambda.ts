@@ -28,15 +28,28 @@ const db = new Kysely<Database>({
 });
 
 // implement tRPC router
-const appRouter = initTRPC.create().router({
-  getTasks: initTRPC.create().procedure.output(z.array(z.object({task: z.string(), completed: z.boolean()}))).query(async () => {
+const t = initTRPC.create()
+const appRouter = t.router({
+  getTasks: t.procedure
+    .output(z.array(z.object({task: z.string(), completed: z.boolean()}))).query(async () => {
     const record = await db
-    .selectFrom("todotbl")
-    .selectAll()
-    .execute();
+      .selectFrom("todotbl")
+      .selectAll()
+      .execute();
 
     return record
+  }),
+  addTask: t.procedure
+    .input(z.string()).mutation(async req => {
+    const result = await db
+      .insertInto('todotbl')
+      .values({
+        task: req.input,
+        completed: false
+      })
+      .execute()
 
+    return result
   })
 });
 
