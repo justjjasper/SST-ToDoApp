@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './App.css';
-import axios from 'axios';
 import { createTRPCReact } from '@trpc/react-query';
 import type { AppRouter } from '../../services/functions/lambda';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -11,22 +10,15 @@ export const trpc = createTRPCReact<AppRouter>();
 
 function AppContent() {
 
-  const [task, setTask] = useState<any>([]);
-
-  const getTask = trpc.getTasks.useQuery("GO RUN BOI")
-
-  console.log('what is a task', getTask.data)
-
-  useEffect(() => {
-    axios.get(process.env.REACT_APP_API_URL as string)
-    .then((response) => setTask(response.data))
-  },[])
+  const getTask = trpc.getTasks.useQuery().data
 
   return (
     <div className="App">
-      {task.map( (each: { task: string }) => {
+      {getTask?.map((each, i) => {
         return (
-          <div>{each.task} </div>
+          <div key={i}>
+            {each.task}
+          </div>
         )
       })}
     </div>
@@ -55,3 +47,7 @@ const App = () => {
 }
 
 export default App;
+function each(each: any, arg1: (i: any) => JSX.Element): React.ReactNode {
+  throw new Error('Function not implemented.');
+}
+
