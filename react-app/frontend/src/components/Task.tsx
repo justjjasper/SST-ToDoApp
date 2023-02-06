@@ -1,3 +1,5 @@
+import { trpc } from '../App'
+import axios from 'axios';
 import { useState } from 'react';
 
 interface TaskProp {
@@ -11,13 +13,30 @@ interface TotalProp {
 }
 
 export default function Task( {task, delTaskFunc} : TotalProp) {
+  const delTask = trpc.delTask.useMutation()
+  const updateTask = trpc.updateTask.useMutation();
 
   const handleDelete = () => {
+    delTask.mutate(task.task)
+    // axios.delete(`${process.env.REACT_APP_API_URL}/${task.task}` as string)
     delTaskFunc(task.task)
   }
 
+  const handleChange = () => {
+    task.completed = !task.completed
+    console.log('what is the task', task.task, 'what is task status', task.completed)
+    updateTask.mutate(task)
+  }
+
   return (
-    <div>
+    <div
+      style = {task.completed ? {textDecorationLine:'line-through'} : {}}
+     >
+      <input
+      type="checkbox"
+      onChange = {handleChange}
+      checked = {task.completed}
+      />
       {task.task}
       <button
       onClick={handleDelete}>

@@ -1,4 +1,4 @@
-import { RDSDataService } from "aws-sdk";
+import { RDSDataService, Route53Resolver } from "aws-sdk";
 import { Kysely } from "kysely";
 import { DataApiDialect } from "kysely-data-api";
 import { RDS } from "@serverless-stack/node/rds";
@@ -40,6 +40,15 @@ const appRouter = t.router({
 
     return record
   }),
+  delTask: t.procedure
+  .input(z.string()).mutation(req => {
+    console.log('what is req.input backend', req.input)
+    db
+    .deleteFrom('todotbl')
+    .where('todotbl.task', '=', req.input)
+    .executeTakeFirst()
+    console.log('hah it worked deleting')
+  }),
   addTask: t.procedure
   .input(z.string()).mutation(async req => {
     await db
@@ -50,36 +59,53 @@ const appRouter = t.router({
     })
     .execute()
   }),
-  delTask: t.procedure
-  .input(z.string()).mutation (async req => {
-    const res = await db
-    .deleteFrom('todotbl')
-    .where('task', '=', req.input)
-    .executeTakeFirst()
-
-    console.log('del backend', res.numDeletedRows)
+  updateTask: t.procedure
+  .input(z.object({task:z.string(), completed: z.boolean()})).mutation(req => {
+    console.log('what is task received', req.input)
+     db
+     .updateTable('todotbl')
+     .set({
+       task: req.input.task,
+       completed: !req.input.completed
+     })
+     .where('task', '=', req.input.task)
+     .executeTakeFirst()
   })
 });
 
 export type AppRouter = typeof appRouter
 
 // **Do not need Context atm, it's meant for Auth**
-// const createContext = ({
-//   event,
-//   context,
-// }: CreateAWSLambdaContextOptions<APIGatewayProxyEventV2>) => ({}) // no context
-// type Context = trpc.inferAsyncReturnType<typeof createContext>;
+const createContext = ({
+  event,
+  context,
+}: CreateAWSLambdaContextOptions<APIGatewayProxyEventV2>) => ({}) // no context
+type Context = trpc.inferAsyncReturnType<typeof createContext>;
 
 export const trpcHandler = awsLambdaRequestHandler({
   router: appRouter,
-  // createContext,
+  createContext,
 })
 
-
-
-
-
-
+export async function deleteHandler (event:any) {
+  console.log('tell me the vent', event.pathParameters.info)
+   try{
+     await db
+  .deleteFrom('todotbl')
+  .where('todotbl.task', '=', event.pathParameters.info)
+  .execute()
+  return {
+    statusCode: 200,
+    body: 'It worked kinda'
+  }
+}
+catch(error) {
+  return {
+    statusCode: 420,
+    body: 'Failed to work'
+  }
+}
+}
 
 
 

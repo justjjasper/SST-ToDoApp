@@ -14,10 +14,16 @@ export function MyStack({ stack }: StackContext) {
         bind: [cluster]  // <--- Adds PSQL Api
       },
     },
+    // cors: {
+    //   allowHeaders: ["Authorization"],
+    //   allowMethods: ["ANY"],
+    //   allowOrigins: ['http://localhost:3000'],
+    // },
     routes: {
       "GET /trpc/{proxy+}": "functions/lambda.trpcHandler",
+      "PATCH /trpc/{proxy+}": "functions/lambda.trpcHandler",
       "POST /trpc/{proxy+}": "functions/lambda.trpcHandler",
-      "DELETE /trpc/{proxy+}": "functions/lambda.trpcHandler"
+      "DELETE /{info}": "functions/lambda.trpcHandler",
     },
   });
 

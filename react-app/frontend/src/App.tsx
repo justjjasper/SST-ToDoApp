@@ -33,7 +33,6 @@ function AppContent() {
     const newTasks = tasks.filter(each => each.task !== task)
 
     setTasks(newTasks)
-    console.log('it cicked')
   }
 
   return (
@@ -57,7 +56,13 @@ const App = () => {
     trpc.createClient({
       links: [
         httpBatchLink({
-          url: `${process.env.REACT_APP_API_URL}/trpc`
+          url: `${process.env.REACT_APP_API_URL}/trpc`,
+          // fetch(url, options) {
+          //   return fetch(url, {
+          //     ...options,
+          //     credentials: 'include'
+          //   })
+          // }
         })
       ]
     })

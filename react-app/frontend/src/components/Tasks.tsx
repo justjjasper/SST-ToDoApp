@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import Task from './Task';
 
 interface TaskProp {
@@ -12,7 +11,6 @@ interface Props {
 };
 
 export default function Tasks ( {tasks, delTaskFunc}: Props) {
-
   return (
     <div>
       {tasks.map( (each, i) => (
