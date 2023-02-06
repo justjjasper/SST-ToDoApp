@@ -1,4 +1,4 @@
-import { RDSDataService, Route53Resolver } from "aws-sdk";
+import { RDSDataService } from "aws-sdk";
 import { Kysely } from "kysely";
 import { DataApiDialect } from "kysely-data-api";
 import { RDS } from "@serverless-stack/node/rds";
@@ -30,6 +30,8 @@ const db = new Kysely<Database>({
 
 // implement tRPC router
 const t = initTRPC.create()
+
+// trpc contains proecdures, which are similar to "REST end points"
 const appRouter = t.router({
   getTasks: t.procedure
   .output(z.array(z.object({task: z.string(), completed: z.boolean()}))).query(async () => {
@@ -42,7 +44,6 @@ const appRouter = t.router({
   }),
   delTask: t.procedure
   .input(z.string()).mutation(req => {
-    console.log('what is req.input backend', req.input)
     db
     .deleteFrom('todotbl')
     .where('todotbl.task', '=', req.input)
@@ -50,8 +51,8 @@ const appRouter = t.router({
     console.log('hah it worked deleting')
   }),
   addTask: t.procedure
-  .input(z.string()).mutation(async req => {
-    await db
+  .input(z.string()).mutation(req => {
+     db
     .insertInto('todotbl')
     .values({
         task: req.input,
@@ -60,16 +61,15 @@ const appRouter = t.router({
     .execute()
   }),
   updateTask: t.procedure
-  .input(z.object({task:z.string(), completed: z.boolean()})).mutation(req => {
-    console.log('what is task received', req.input)
-     db
-     .updateTable('todotbl')
-     .set({
-       task: req.input.task,
-       completed: !req.input.completed
-     })
-     .where('task', '=', req.input.task)
-     .executeTakeFirst()
+  .input(z.object({task:z.string(), completed: z.boolean()})).mutation( req => {
+    db
+    .updateTable('todotbl')
+    .set({
+      task: req.input.task,
+      completed: !req.input.completed
+    })
+    .where('task', '=', req.input.task)
+    .executeTakeFirstOrThrow()
   })
 });
 
@@ -87,27 +87,26 @@ export const trpcHandler = awsLambdaRequestHandler({
   createContext,
 })
 
-export async function deleteHandler (event:any) {
-  console.log('tell me the vent', event.pathParameters.info)
-   try{
-     await db
-  .deleteFrom('todotbl')
-  .where('todotbl.task', '=', event.pathParameters.info)
-  .execute()
-  return {
-    statusCode: 200,
-    body: 'It worked kinda'
-  }
-}
-catch(error) {
-  return {
-    statusCode: 420,
-    body: 'Failed to work'
-  }
-}
-}
 
-
+// export async function deleteHandler (event:any) {
+//   console.log('tell me the vent', event.pathParameters.info)
+//    try{
+//      await db
+//   .deleteFrom('todotbl')
+//   .where('todotbl.task', '=', event.pathParameters.info)
+//   .execute()
+//   return {
+//     statusCode: 200,
+//     body: 'It worked kinda'
+//   }
+// }
+// catch(error) {
+//   return {
+//     statusCode: 420,
+//     body: 'Failed to work'
+//   }
+// }
+// }
 
 // handles GET function (controller)
 // export async function getHandler() {

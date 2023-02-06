@@ -16,7 +16,6 @@ function AppContent() {
 
   useEffect(()=> {
     if (getTask) setTasks(getTask)
-    console.log('it is working')
   }, [getTask])
 
   const addTaskFunc = (task: string): void => {

@@ -18,11 +18,9 @@ export default function Form ({ addTaskFunc = (task:string) => {}} ) {
     <div>
       <input
         ref = {formRef}
-        type= 'text'
-      />
+        type= 'text'/>
       <button
-        onClick = {handleClick}
-      >
+        onClick = {handleClick}>
         Add
       </button>
     </div>

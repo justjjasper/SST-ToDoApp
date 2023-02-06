@@ -1,6 +1,5 @@
 import { trpc } from '../App'
 import axios from 'axios';
-import { useState } from 'react';
 
 interface TaskProp {
   task: string;
@@ -24,7 +23,6 @@ export default function Task( {task, delTaskFunc} : TotalProp) {
 
   const handleChange = () => {
     task.completed = !task.completed
-    console.log('what is the task', task.task, 'what is task status', task.completed)
     updateTask.mutate(task)
   }
 

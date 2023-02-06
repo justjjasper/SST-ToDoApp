@@ -1,4 +1,4 @@
-import { StackContext, ReactStaticSite, Api, RDS } from "@serverless-stack/resources";
+import { StackContext, StaticSite, Api, RDS } from "@serverless-stack/resources";
 
 export function MyStack({ stack }: StackContext) {
   // create Aurora DB cluster
@@ -21,15 +21,18 @@ export function MyStack({ stack }: StackContext) {
     // },
     routes: {
       "GET /trpc/{proxy+}": "functions/lambda.trpcHandler",
-      "PATCH /trpc/{proxy+}": "functions/lambda.trpcHandler",
       "POST /trpc/{proxy+}": "functions/lambda.trpcHandler",
-      "DELETE /{info}": "functions/lambda.trpcHandler",
+      // "PATCH /trpc/{proxy+}": "functions/lambda.trpcHandler",
+      // "DELETE /trpc/{info}": "functions/lambda.trpcHandler",
     },
   });
 
+
   // deploy react app
-  const site = new ReactStaticSite(stack, "ReactSite", {
+  const site = new StaticSite(stack, "ReactSite", {
     path: "frontend",
+    buildCommand: "npm run build", // or "yarn build"
+    buildOutput: "build",
     environment: {
       REACT_APP_API_URL: api.url,
     },
